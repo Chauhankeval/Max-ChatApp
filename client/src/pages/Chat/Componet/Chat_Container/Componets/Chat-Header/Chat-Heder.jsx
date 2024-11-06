@@ -6,7 +6,8 @@ import { HOST } from "@/Services/urlHelper";
 import { getColor } from "@/lib/utils";
 
 const ChatHeader = () => {
-  const { closeChat, selectedChatData, selectedChatType } = useAppStore();
+  const { closeChat, selectedChatData, selectedChatType,notifications } = useAppStore();
+  console.log("<<<<<notifications",notifications)
 
   return (
     <div className="h-[10vh] border-b-2 border-[#2f303b] flex items-center justify-between">

@@ -104,6 +104,7 @@ export const createChatSlice = (set, get) => ({
       });
     }
   },
+
   addChannelInChannelList: (message) => {
     const channels = get().channels;
     const data = channels.find((channel) => channel._id === message.channelId);
@@ -134,6 +135,16 @@ export const createChatSlice = (set, get) => ({
   
     set({ directMessagesContacts: dmContacts });
   },
+
+
+  notifications: [], 
+
+  setNotification: (notification) => {
+    const currentNotifications = get().notifications;
+    set({ notifications: [...currentNotifications, notification] });
+  },
+
+
   
   
 });

@@ -17,7 +17,10 @@ export const PROFILE_IMAGE_DELETE = `${AUTH_ROUTES}/delete-profile-img`
 
 export const LOGOUT_URL = `${AUTH_ROUTES}/logout`
 
+export const SEND_OTP_VIA_EMAIL = `${AUTH_ROUTES}/sendotp`
 
+
+export const PASSWORD_CHNAGE_AUTH = `${AUTH_ROUTES}/verifyotpandchangepassword`
 
 // ==============================================================================================================
 

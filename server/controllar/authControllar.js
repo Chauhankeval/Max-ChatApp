@@ -2,7 +2,8 @@ import { compare } from "bcrypt";
 import UserData from "../model/userModel.js";
 import pkg from "jsonwebtoken"; // Import the entire package
 const { sign } = pkg; // Destructure the 'sign' function
-
+import sgMail from "@sendgrid/mail";
+import nodemailer from "nodemailer";
 import { renameSync, unlink, unlinkSync } from "fs";
 import path from "path"; // To safely handle file paths
 
@@ -102,8 +103,6 @@ const getUserData = async (req, res) => {
 
     // Use the correct model to find the user by their ID (assuming your model is named 'User')
     const userData = await UserData.findById(req.userId);
-
-
 
     // Check if the user was found
     if (!userData) {
@@ -226,7 +225,7 @@ const DeleteProfileImage = async (req, res) => {
 const LogOutUser = async (req, res) => {
   const { userId } = req;
   try {
-    res.cookie("jwt", "", { maxage: 1, secure: true,  sameSite: "None"});
+    res.cookie("jwt", "", { maxage: 1, secure: true, sameSite: "None" });
 
     return res.status(200).json({
       message: "LogOut SuccessFUlly",
@@ -237,11 +236,147 @@ const LogOutUser = async (req, res) => {
   }
 };
 
+const sendOTP = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Check if the user exists in the database
+    const user = await UserData.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    console.log("<<<USER", user);
+
+    // Generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
+    const otpExpires = Date.now() + 3600000; // OTP valid for 1 hour
+
+    // Save OTP and expiration time in the database
+    user.otp = otp;
+    user.otpExpires = otpExpires;
+    await user.save();
+
+    // Create a transporter object using Gmail
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      secure: false, // true for port 465, false for other ports
+      port: 587, // Use 587 for TLS
+      auth: {
+        user: "kevalachauhan2017@gmail.com", // Correct email address
+        pass: "yoec tblg fold acen", // Use the app-specific password here
+      },
+    });
+
+    // Email message options
+    const mailOptions = {
+      from: "kevalachauhan2017@gmail.com", // Correct email address
+      to: email,
+      subject: "Password Reset OTP",
+      html: `
+        <table role="presentation" style="width: 100%; max-width: 600px; margin: auto; border-collapse: collapse; border-radius: 8px; overflow: hidden;">
+          <tr>
+            <td style="position: relative; text-align: center; background-color: #ffffff;">
+              <!-- Background Image -->
+              <img src="https://img.freepik.com/premium-vector/secure-email-otp-authentication-verification-method_258153-468.jpg" 
+                   alt="Background" 
+                   style="width: 100%; height: auto; position: absolute; top: 0; left: 0; right: 0; bottom: 0; object-fit: cover; opacity: 0.3; z-index: 0;" />
+              
+              <!-- Title Box -->
+              <div style="position: relative; z-index: 1; background-color: #ff5722; padding: 10px; color: white; font-size: 20px; font-weight: bold; border-top-left-radius: 8px; border-top-right-radius: 8px;">
+                Max ChatApp
+              </div>
+    
+              <!-- Foreground Content -->
+              <div style="position: relative; z-index: 1; padding: 20px; background-color: rgba(255, 255, 255, 0.8); border-radius: 8px;">
+                <h2 style="color: #333;">Password Reset Request</h2>
+                <p style="font-size: 18px; color: #555;">Your One-Time Password (OTP) is:</p>
+                <h1 style="font-size: 36px; color: #ff5722;">${otp}</h1>
+                <p style="font-size: 16px; color: #555;">It is valid for <strong>1 hour</strong>.</p>
+                <p style="font-size: 16px; color: #555;">If you did not request this, please ignore this email.</p>
+                <footer style="margin-top: 20px; font-size: 14px; color: #999;">
+                  <p>Thank you,</p>
+                  <p>Your Company Name</p>
+                </footer>
+              </div>
+            </td>
+          </tr>
+        </table>
+      `,
+    };
+
+    // Send email
+    const data = await transporter.sendMail(mailOptions);
+    console.log("<<<data", data);
+
+    // Respond with success message
+    res.status(200).json({ message: "OTP sent successfully." });
+  } catch (error) {
+    console.error("Error sending OTP:", error);
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
+const verifyOTPAndChangePassword = async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  // Log data from the frontend for debugging
+  console.log("<<<<<<Data from frontend:", email, otp, newPassword);
+
+  try {
+    // Step 1: Verify JWT token
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Unauthorized request" });
+    }
+
+    const token = authHeader.split(" ")[1];
+    let decoded;
+
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET); // Replace with your JWT secret
+    } catch (err) {
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
+
+    // Step 2: Check if the email in the token matches the requested email
+    if (decoded.email !== email) {
+      return res.status(403).json({ message: "Token does not match email" });
+    }
+
+    // Step 3: Find the user in the database
+    const user = await UserData.findOne({ email });
+    console.log("<<<User:", user);
+
+    // Step 4: Verify OTP and expiration
+    if (!user || user.otp !== otp || Date.now() > user.otpExpires) {
+      return res.status(400).json({ message: "Invalid or expired OTP." });
+    }
+
+    // Step 5: Hash the new password and save it
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    user.password = hashedPassword;
+    user.otp = undefined; // Clear OTP
+    user.otpExpires = undefined;
+
+    await user.save();
+
+    return res.status(200).json({ message: "Password updated successfully." });
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    return res.status(500).json({ message: "Server error." });
+  }
+};
+
 export {
+  verifyOTPAndChangePassword,
+  sendOTP,
   signup,
   login,
   getUserData,
-  updateProfile,  
+  updateProfile,
   updateProfileImage,
   DeleteProfileImage,
   LogOutUser,

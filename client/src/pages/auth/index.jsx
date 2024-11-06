@@ -10,7 +10,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "@/Store";
-
+import BackGround from "./bg.mp4";
 const Auth = () => {
   const { setUserInfo } = useAppStore();
   const navigate = useNavigate();
@@ -84,11 +84,9 @@ const Auth = () => {
     if (isValid) {
       try {
         const reqobj = {
-          
-            email,
-            confirmPassword,
-            password,
-          
+          email,
+          confirmPassword,
+          password,
         };
 
         const uri = SIGNUP_URL;
@@ -110,15 +108,31 @@ const Auth = () => {
   };
 
   return (
-    <div className="h-[100%] w-[100%] flex items-center justify-center">
-      <div className="h-[80vh] bg-white border-2 border-white text-opacity-90 shadow-2xl w-[80vw] md:h-[90vw] sm:h-[70vw] lg:h-[60vw] rounded-3xl grid xl:grid-cols-2">
+    <div className="h-[100vh] w-[100vw] flex items-center justify-center relative overflow-hidden">
+      {/* Video background */}
+      <video
+        autoPlay
+        loop
+        muted
+        className="absolute top-0 left-0 w-full h-full object-cover"
+      >
+        <source src={BackGround} type="video/mp4" />
+      </video>
+
+      {/* Overlay to control opacity */}
+      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div>
+
+      {/* Main Content */}
+      <div className="relative h-[80vh] shadow-2xl w-[80vw] md:h-[90vw] sm:h-[70vw] lg:h-[60vw] rounded-3xl grid xl:grid-cols-2">
         <div className="flex flex-col gap-10 items-center justify-center">
           <div className="flex items-center justify-center flex-col">
             <div className="flex justify-center items-center">
-              <h1 className="text-5xl font-bold md:text-6xl">Welcome</h1>
+              <h1 className="text-5xl font-bold md:text-6xl text-white">
+                Welcome
+              </h1>
               <img src={Victory} alt="Victory Image" className="h-[100px]" />
             </div>
-            <p className="font-medium text-center">
+            <p className="font-medium text-center text-white">
               Fill the Details to Start Chat With Buddy
             </p>
           </div>
@@ -127,22 +141,18 @@ const Auth = () => {
               <TabsList className="bg-transparent rounded-none w-full">
                 <TabsTrigger
                   value="login"
-                  className="data-[state=active]:bg-transparent text-black text-opacity-90 border-b-2 rounded-none w-full data-[state=active]:text-black data-[state=active]:semi-bold data-[state=active]:border-b-purple-500 p-3 transition-all duration-300"
+                   className="data-[state=active]:bg-transparent text-white text-opacity-90 border-b-2 rounded-none w-full data-[state=active]:text-sky-500 data-[state=active]:semi-bold data-[state=active]:border-b-sky-500 p-3 transition-all duration-300"
                 >
                   Login
                 </TabsTrigger>
-
                 <TabsTrigger
                   value="signup"
-                  className="data-[state=active]:bg-transparent text-black text-opacity-90 border-b-2 rounded-none w-full data-[state=active]:text-black data-[state=active]:semi-bold data-[state=active]:border-b-purple-500 p-3 transition-all duration-300"
-                >
+                  className="data-[state=active]:bg-transparent text-white text-opacity-90 border-b-2 rounded-none w-full data-[state=active]:text-sky-500 data-[state=active]:semi-bold data-[state=active]:border-b-sky-500 p-3 transition-all duration-300"                >
                   Sign up
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="login">
                 <div className="mb-4 mt-4">
-                  {" "}
-                  {/* Added mt-4 */}
                   <TextField
                     id="email"
                     label="Email"
@@ -151,6 +161,13 @@ const Auth = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     fullWidth
                     className="mt-4"
+                    InputProps={{
+                      style: { color: "white", borderColor: "white" },
+                      classes: { notchedOutline: "border-white" },
+                    }}
+                    InputLabelProps={{
+                      style: { color: "white" },
+                    }}
                   />
                 </div>
                 <div className="mb-4">
@@ -163,6 +180,13 @@ const Auth = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     fullWidth
                     className="mt-4"
+                    InputProps={{
+                      style: { color: "white", borderColor: "white" },
+                      classes: { notchedOutline: "border-white" },
+                    }}
+                    InputLabelProps={{
+                      style: { color: "white" },
+                    }}
                   />
                 </div>
                 <Button
@@ -173,10 +197,9 @@ const Auth = () => {
                   Login
                 </Button>
               </TabsContent>
+
               <TabsContent value="signup">
                 <div className="mb-4 mt-4 rounded-lg">
-                  {" "}
-                  {/* Added mt-4 */}
                   <TextField
                     id="emailSignup"
                     label="Email"
@@ -185,6 +208,13 @@ const Auth = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     fullWidth
                     className="mt-4"
+                    InputProps={{
+                      style: { color: "white", borderColor: "white" },
+                      classes: { notchedOutline: "border-white" },
+                    }}
+                    InputLabelProps={{
+                      style: { color: "white" },
+                    }}
                   />
                 </div>
                 <div className="mb-4">
@@ -197,6 +227,13 @@ const Auth = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     fullWidth
                     className="mt-4"
+                    InputProps={{
+                      style: { color: "white", borderColor: "white" },
+                      classes: { notchedOutline: "border-white" },
+                    }}
+                    InputLabelProps={{
+                      style: { color: "white" },
+                    }}
                   />
                 </div>
                 <div className="mb-4">
@@ -209,6 +246,13 @@ const Auth = () => {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     fullWidth
                     className="mt-4"
+                    InputProps={{
+                      style: { color: "white", borderColor: "white" },
+                      classes: { notchedOutline: "border-white" },
+                    }}
+                    InputLabelProps={{
+                      style: { color: "white" },
+                    }}
                   />
                 </div>
                 <Button
@@ -221,9 +265,6 @@ const Auth = () => {
               </TabsContent>
             </Tabs>
           </div>
-        </div>
-        <div className="hidden  xl:flex justify-center items-center">
-          <img src={LoginPng} alt="BackGround Img" className="h-[700px]" />
         </div>
       </div>
     </div>

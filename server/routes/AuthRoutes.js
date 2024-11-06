@@ -4,9 +4,11 @@ import {
   getUserData,
   login,
   LogOutUser,
+  sendOTP,
   signup,
   updateProfile,
   updateProfileImage,
+  verifyOTPAndChangePassword,
 } from "../controllar/authControllar.js";
 import { verifyToken } from "../middelware/AuthMiddelware.js";
 import multer from "multer";
@@ -46,5 +48,10 @@ AuthRoute.post("/profile-img", verifyToken, upload.single('profile/image'), upda
 AuthRoute.delete("/delete-profile-img" , verifyToken , DeleteProfileImage)
 
 AuthRoute.post("/logout", LogOutUser);
+
+AuthRoute.post("/verifyotpandchangepassword",verifyToken, verifyOTPAndChangePassword);
+
+AuthRoute.post("/sendotp",verifyToken,  sendOTP);
+
 
 export default AuthRoute;
