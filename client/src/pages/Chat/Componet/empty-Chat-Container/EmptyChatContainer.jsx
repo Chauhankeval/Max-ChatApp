@@ -1,13 +1,28 @@
 import { animationDefaultOptions } from "@/lib/utils";
-import { Button } from "@mui/material";
+
 import React from "react";
 import Lottie from "react-lottie";
+import Button from '../../../ai/button/Button'
+import { AddRounded, WebRounded } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const EmptyChatContainer = () => {
+
+
+  const navigate = useNavigate()
+  const gottoHome = () => {
+    navigate("/home");
+  };
+
+
   return (
     <>
       <div className="flex-1 md:bg-[#1c1d25] md:flex flex-col justify-center items-center hidden duration-1000 transition-all relative">
-        <Button className="absolute top-3 right-3">Generate Image</Button>
+      <Button
+          text="Generate Image"
+          leftIcon={<AddRounded style={{ fontSize: "18px" }} />}
+          onClick={gottoHome}
+        />
         <Lottie
           isClickToPauseDisabled={true}
           height={200}

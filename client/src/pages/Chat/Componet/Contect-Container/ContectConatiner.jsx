@@ -18,36 +18,17 @@ import {
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import Lottie from "react-lottie";
 import { animationDefaultOptions } from "@/lib/utils";
-
+import notificationSoundFile from './Componets/notificationSound.mp3'
 const ContectConatiner = () => {
   const {
     setDirectMessagesContact,
     directMessagesContact,
     channels,
     setChannels,
-    notifications,
+  
   } = useAppStore();
 
-  const sampleNotifications = [
-    {
-      _id: "1",
-      sender: {
-        firstName: "Keval",
-        lastName: "Chauhan",
-        image: "uploads/profiles/sample-image.png",
-      },
-      content: "Hello! How are you?",
-    },
-    {
-      _id: "2",
-      sender: {
-        firstName: "John",
-        lastName: "Doe",
-        image: "uploads/profiles/sample-image2.png",
-      },
-      content: "Meeting at 3 PM",
-    },
-  ];
+
 
   const getContactForDm = async () => {
     try {
@@ -113,6 +94,7 @@ const ContectConatiner = () => {
 
 export default ContectConatiner;
 
+
 const Logo = () => {
   const { notifications, userInfo } = useAppStore();
   console.log("<<<<<userInfo", userInfo);
@@ -123,7 +105,18 @@ const Logo = () => {
     (notification) => !notification.isRead
   ).length;
 
-  // Lottie animation settings
+  // Notification Sound
+  // const playNotificationSound = () => {
+  //   const audio = new Audio(notificationSoundFile);
+  //   audio.play();
+  // };
+
+  // Use Effect to play sound when new notification is added
+  // useEffect(() => {
+  //   if (notifications.length > 0) {
+  //     playNotificationSound();
+  //   }
+  // }, []);
 
   return (
     <div className="flex p-5 justify-start items-center gap-2">
@@ -192,7 +185,7 @@ const Logo = () => {
                         ? notification.isRead
                           ? "bg-gray-100"
                           : "bg-blue-100"
-                        : "bg-white" // Or any default background for notifications not meant for the logged-in user
+                        : "bg-white"
                     }`}
                   >
                     {notification.recipient._id === userInfo.id && (

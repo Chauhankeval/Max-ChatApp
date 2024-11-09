@@ -19,13 +19,13 @@ const Button = styled.div`
     padding: 8px 12px;
   }
 
-  ${({ type, theme }) =>
+  ${({ type }) =>
     type === "secondary"
       ? `
-  background: ${theme.secondary};
+  background: #a855f7; /* Purple color for "Post Image" button */
   `
       : `
-  background: ${theme.primary};
+  background: #3b82f6; /* Blue color for "Generate Image" button */
 `}
 
   ${({ isDisabled }) =>
@@ -33,19 +33,20 @@ const Button = styled.div`
     `
   opacity: 0.4;
   cursor: not-allowed;
-
   `}
+
   ${({ isLoading }) =>
     isLoading &&
     `
     opacity: 0.8;
   cursor: not-allowed;
-`}
-${({ flex }) =>
+  `}
+
+  ${({ flex }) =>
     flex &&
     `
     flex: 1;
-`}
+  `}
 `;
 
 const button = ({
@@ -62,9 +63,9 @@ const button = ({
     <Button
       onClick={() => !isDisabled && !isLoading && onClick()}
       isDisabled={isDisabled}
-      type={type}
       isLoading={isLoading}
       flex={flex}
+      type={type}
     >
       {isLoading && (
         <CircularProgress

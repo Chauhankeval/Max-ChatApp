@@ -20,11 +20,13 @@ const SearchBar = () => {
     <SearchBarContainer>
       <SearchOutlined />
       <input
+      placeholder="Search With Prompt or Name"
         style={{
           border: "none",
           outline: "none",
           width: "100%",
           color: "inherit",
+          fontSize : "16px",
           background: "transparent",
         }}
       />

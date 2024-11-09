@@ -35,7 +35,7 @@ const Navbar = () => {
   console.log(path);
   return (
     <Container>
-      GemAI
+      MaxAI
       {path[1] === "post" ? (
         <Button
           text="Explore Posts"
