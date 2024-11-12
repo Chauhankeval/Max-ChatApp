@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import GenerateImageForm from "./GenerateImageForm";
 import GenerateImageCart from "./GenerateImageCart";
@@ -13,17 +13,14 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  justify-content : center;
+  justify-content: center;
   @media (max-width: 768px) {
     padding: 6px 10px;
   }
 `;
 
-
-
 const Wrapper = styled.div`
-
-  width : 100%;
+  width: 100%;
   height: fit-content;
   max-width: 1200px;
   gap: 8%;
@@ -35,11 +32,27 @@ const Wrapper = styled.div`
 `;
 
 const CreatePost = () => {
+  const [generateImageLoading, setGenerateImageLoading] = useState(false);
+  const [createPostLoading, setCreatePostLoading] = useState(false);
+
+  const [post, setPost] = useState({
+    name: "",
+    prompt: "",
+    photo: "",
+  });
+
   return (
     <Container>
       <Wrapper>
-        <GenerateImageForm />
-        <GenerateImageCart loading/>
+        <GenerateImageForm
+          post={post}
+          setPost={setPost}
+          setGenerateImageLoading={setGenerateImageLoading}
+          createPostLoading={createPostLoading}
+          generateImageLoading={generateImageLoading}
+          setCreatePostLoading={setCreatePostLoading}
+        />
+        <GenerateImageCart loading={generateImageLoading} src={post?.photo} />
       </Wrapper>
     </Container>
   );

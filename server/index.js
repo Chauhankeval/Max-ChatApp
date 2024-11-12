@@ -9,13 +9,17 @@ import ContectRoute from "./routes/ContectRoute.js";
 import setUpSocket from "./Socket.js";
 import MessagesRoute from "./routes/MessageRoutes.js";
 import ChannelRoute from "./routes/ChannelRoute.js";
+import PostRoute from "./routes/PostRoutes.js";
+import { log } from "console";
+
 
 dotenv.config();
-
 const app = express();
 
 const port = process.env.PORT || 3001;
 const databaseURL = process.env.DATABASE_URL;
+// console.log("<<<<databaseURL",databaseURL );
+
 
 
 
@@ -41,6 +45,8 @@ app.use("/api/auth", AuthRoute);
 app.use("/api/contects", ContectRoute);
 app.use("/api/messages", MessagesRoute);
 app.use("/api/channel", ChannelRoute);
+app.use("/api/post", PostRoute);
+
 
 
 
