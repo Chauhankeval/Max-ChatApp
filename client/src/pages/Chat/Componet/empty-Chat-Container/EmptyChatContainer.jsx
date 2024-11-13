@@ -17,7 +17,7 @@ const EmptyChatContainer = () => {
 
   return (
     <>
-      <div className="flex-1 md:bg-[#1c1d25] md:flex flex-col justify-center items-center hidden duration-1000 transition-all relative">
+      <div className="flex-1 md:bg-[#090917] md:flex flex-col justify-center items-center hidden duration-1000 transition-all relative">
       <Button
           text="Generate Image"
           leftIcon={<AddRounded style={{ fontSize: "18px" }} />}

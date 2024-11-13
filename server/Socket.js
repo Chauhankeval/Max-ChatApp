@@ -2,14 +2,21 @@ import { Server } from "socket.io"; // Importing the Server instead of renaming 
 import MessageData from "./model/MessageModel.js";
 import Channel from "./model/ChannelModel.js";
 
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const setupSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: process.env.ORIGIN,
       methods: ["GET", "POST"],
       credentials: true,
     },
   });
+
+
+
 
   const userSocketMap = new Map();
 

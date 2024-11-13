@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:8008";
+
+const API_URL = import.meta.env.VITE_SERVER_URL;
+
 
 export const ApiService = {
   callServicePostBodyData: async (url, bodyData) => {
